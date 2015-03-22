@@ -981,6 +981,8 @@ static public abstract class HostExpr implements Expr, MaybePrimitiveExpr{
 					Object o = currentNS().getMapping(sym);
 					if(o instanceof Class)
 						c = (Class) o;
+					else if(LOCAL_ENV.deref() != null && ((java.util.Map)LOCAL_ENV.deref()).containsKey(form))
+					    return null;
 					else
 						{
 						try{
@@ -1022,7 +1024,8 @@ static public abstract class HostExpr implements Expr, MaybePrimitiveExpr{
 	 }
  */
 	static Class tagToClass(Object tag) {
-		Class c = maybeClass(tag, true);
+	    //		Class c = maybeClass(tag, true);
+		Class c = null;
 		if(tag instanceof Symbol)
 			{
 			Symbol sym = (Symbol) tag;
@@ -1064,6 +1067,8 @@ static public abstract class HostExpr implements Expr, MaybePrimitiveExpr{
 					c = Boolean.TYPE;
 				}
 			}
+		if(c == null)
+		    c = maybeClass(tag, true);
 		if(c != null)
 			return c;
 		throw new IllegalArgumentException("Unable to resolve classname: " + tag);
